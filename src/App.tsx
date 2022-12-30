@@ -1,24 +1,13 @@
-import { Container, Text } from '@chakra-ui/react';
-import LoginButton from './components/LoginButton';
-import useAuth from './hooks/useAuth';
+import { Route, Routes } from 'react-router-dom';
+import ChatRoom from './pages/ChatRoom';
+import Home from './pages/Home';
 
 function App() {
-    const { user } = useAuth();
-
     return (
-        <Container textAlign='center' py={10}>
-            <Text fontSize='4xl' fontWeight='bold'>
-                💬 Chat room
-            </Text>
-            {user ? (
-                <Text>Authenticated</Text>
-            ) : (
-                <>
-                    <Text>Unauthenticated</Text>
-                    <LoginButton />
-                </>
-            )}
-        </Container>
+        <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/room' element={<ChatRoom />} />
+        </Routes>
     );
 }
 
