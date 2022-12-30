@@ -2,7 +2,10 @@
 import { getAnalytics } from 'firebase/analytics';
 import { FirebaseError, FirebaseOptions, initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { addDoc, collection, getFirestore, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
+import { Dispatch, SetStateAction } from 'react';
+import { IUser } from '../types/auth';
+import { IMessage } from '../types/messages';
 
 const firebaseConfig: FirebaseOptions = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -33,4 +36,31 @@ export const loginWithGoogle = async () => {
     }
 };
 
-export default db;
+export const sendMessage = async (roomId: string, user: IUser, text: string) => {
+    try {
+        await addDoc(collection(db, 'chat-rooms', roomId, 'messages'), {
+            uid: user.uid,
+            displayName: user.displayName,
+            text: text.trim(),
+            timestamp: serverTimestamp()
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const getMessages = (roomId: string, callback: Dispatch<SetStateAction<IMessage[]>>) => {
+    return onSnapshot(
+        query(collection(db, 'chat-rooms', roomId, 'messages'), orderBy('timestamp', 'asc')),
+        (querySnapshot) => {
+            const messages = querySnapshot.docs.map(
+                (doc) =>
+                    ({
+                        id: doc.id,
+                        ...doc.data()
+                    } as IMessage)
+            );
+            callback(messages);
+        }
+    );
+};
