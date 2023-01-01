@@ -1,16 +1,15 @@
-import { Button, Container, Text } from '@chakra-ui/react';
+import { Button, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import LoginButton from '../components/LoginButton';
 import useAuth from '../hooks/useAuth';
+import MainContainer from '../layouts/MainContainer';
 
 export default function Home() {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    console.log(user);
-
     return (
-        <Container textAlign='center' py={10}>
+        <MainContainer>
             <Text fontSize='4xl' fontWeight='bold'>
                 💬 Chat room
             </Text>
@@ -25,6 +24,6 @@ export default function Home() {
                     <LoginButton />
                 </>
             )}
-        </Container>
+        </MainContainer>
     );
 }

@@ -12,8 +12,6 @@ export default function ChatRoom() {
 
     console.log(messages);
 
-    console.log(user);
-
     const handleSubmit = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         sendMessage('general', user as IUser, value);
