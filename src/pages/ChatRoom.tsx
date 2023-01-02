@@ -1,6 +1,7 @@
 import {
     Box,
     Button,
+    Center,
     HStack,
     Input,
     InputGroup,
@@ -10,8 +11,9 @@ import {
     Text,
     VStack
 } from '@chakra-ui/react';
+import { delay } from 'bluebird';
 import { capitalize } from 'lodash';
-import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import useMessages from '../hooks/useMessages';
@@ -29,16 +31,18 @@ export default function ChatRoom() {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (room_id) {
-            setIsLoading(false);
-        } else {
+        (async () => {
             setIsLoading(true);
-        }
+            await delay(1000);
+            setIsLoading(false);
+        })();
     }, [room_id]);
 
     useEffect(() => {
-        ref.current?.scrollIntoView();
-    }, [messages]);
+        if (!isLoading) {
+            ref.current?.scrollIntoView();
+        }
+    }, [isLoading, messages]);
 
     const handleSubmit = (e: MouseEvent<HTMLButtonElement>) => {
         if (room_id) {
@@ -48,13 +52,57 @@ export default function ChatRoom() {
         }
     };
 
-    if (isLoading) {
+    const getContent = useCallback(() => {
+        if (isLoading) {
+            return (
+                <Center h='full'>
+                    <Spinner />
+                </Center>
+            );
+        }
+
+        if (messages.length === 0) {
+            return (
+                <Center h='full'>
+                    <Text>Start the conversation!</Text>
+                </Center>
+            );
+        }
+
         return (
-            <MainContainer>
-                <Spinner />
-            </MainContainer>
+            <VStack
+                divider={<StackDivider />}
+                alignItems='start'
+                justifyContent='end'
+                display='block'
+                py={2}
+                overflowY='scroll'
+                sx={{
+                    '&::-webkit-scrollbar': {
+                        width: '10px',
+                        borderRadius: '8px',
+                        backgroundColor: `rgba(0, 0, 0, 0.05)`
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        backgroundColor: 'whiteAlpha.300',
+                        borderRadius: '8px'
+                    }
+                }}
+            >
+                {messages.map((msg, i) => (
+                    <VStack alignItems='start' px={4} py={2} key={msg.id} ref={i === messages.length - 1 ? ref : null}>
+                        <HStack>
+                            <Text fontWeight='bold'>{msg.displayName}</Text>
+                            <Text fontSize='xs' fontWeight='thin'>
+                                {msg.timestamp ? formatDate(msg.timestamp.toDate()) : 'just now'}
+                            </Text>
+                        </HStack>
+                        <Text overflowWrap='anywhere'>{msg.text}</Text>
+                    </VStack>
+                ))}
+            </VStack>
         );
-    }
+    }, [isLoading, messages]);
 
     return (
         <MainContainer>
@@ -70,45 +118,9 @@ export default function ChatRoom() {
                 height='600px'
                 justifyContent='end'
             >
-                <VStack
-                    divider={<StackDivider />}
-                    alignItems='start'
-                    justifyContent='end'
-                    display='block'
-                    py={2}
-                    overflowY='scroll'
-                    sx={{
-                        '&::-webkit-scrollbar': {
-                            width: '10px',
-                            borderRadius: '8px',
-                            backgroundColor: `rgba(0, 0, 0, 0.05)`
-                        },
-                        '&::-webkit-scrollbar-thumb': {
-                            backgroundColor: 'whiteAlpha.300',
-                            borderRadius: '8px'
-                        }
-                    }}
-                >
-                    {messages.map((msg, i) => (
-                        <VStack
-                            alignItems='start'
-                            px={4}
-                            py={2}
-                            key={msg.id}
-                            ref={i === messages.length - 1 ? ref : null}
-                        >
-                            <HStack>
-                                <Text fontWeight='bold'>{msg.displayName}</Text>
-                                <Text fontSize='xs' fontWeight='thin'>
-                                    {msg.timestamp ? formatDate(msg.timestamp.toDate()) : 'just now'}
-                                </Text>
-                            </HStack>
-                            <Text overflowWrap='anywhere'>{msg.text}</Text>
-                        </VStack>
-                    ))}
-                </VStack>
+                {getContent()}
                 {user ? (
-                    <Box as='form' onSubmit={() => handleSubmit}>
+                    <Box as='form' onSubmit={() => handleSubmit} justifySelf='end'>
                         <InputGroup pt={2}>
                             <Input
                                 placeholder='Chat here'
@@ -142,7 +154,7 @@ export default function ChatRoom() {
                         </InputGroup>
                     </Box>
                 ) : (
-                    <Box pt={2} w='full'>
+                    <Box pt={2} w='full' justifySelf='end'>
                         <Button w='full' size='lg' py={4} onClick={login}>
                             Login to chat
                         </Button>
