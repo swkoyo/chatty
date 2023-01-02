@@ -103,9 +103,11 @@ export default function ChatRoom() {
                 {messages.map((msg, i) => (
                     <VStack alignItems='start' px={4} py={2} key={msg.id} ref={i === messages.length - 1 ? ref : null}>
                         <HStack>
-                            <Text fontWeight='bold'>{msg.displayName}</Text>
+                            <Text fontSize='sm' fontWeight='bold'>
+                                {msg.displayName}
+                            </Text>
                             <Text fontSize='xs' fontWeight='thin'>
-                                {msg.timestamp ? formatDate(msg.timestamp.toDate()) : 'just now'}
+                                {formatDate(msg.timestamp?.toDate())}
                             </Text>
                         </HStack>
                         <Text overflowWrap='anywhere'>{msg.text}</Text>
@@ -173,7 +175,14 @@ export default function ChatRoom() {
                     </Box>
                 ) : (
                     <Box pt={2} w='full' justifySelf='end'>
-                        <Button w='full' size='lg' py={4} onClick={login}>
+                        <Button
+                            borderTopRadius='none'
+                            colorScheme='messenger'
+                            w='full'
+                            size='lg'
+                            py={4}
+                            onClick={login}
+                        >
                             Login to chat
                         </Button>
                     </Box>

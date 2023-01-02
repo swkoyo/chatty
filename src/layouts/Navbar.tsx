@@ -1,4 +1,4 @@
-import { ChatIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { ChatIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import {
     Avatar,
     Box,
@@ -6,10 +6,6 @@ import {
     Flex,
     HStack,
     IconButton,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
     Text,
     Tooltip,
     useColorMode,
@@ -36,7 +32,7 @@ export default function Navbar() {
                     <HStack>
                         <ChatIcon fontSize='2xl' />
                         <Text fontSize='xl' fontWeight='medium'>
-                            Agora
+                            Chatty
                         </Text>
                     </HStack>
                 ) : (
@@ -54,32 +50,39 @@ export default function Navbar() {
                     </Flex>
                 )}
                 <Box flexGrow={1} />
-                <Flex alignItems='center'>
-                    <Flex direction='row' gap={4}>
-                        <Tooltip label='Change Theme' hasArrow>
-                            <IconButton
-                                aria-label='change theme'
-                                variant='ghost'
-                                onClick={toggleColorMode}
-                                colorScheme='gray'
-                                icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-                            />
-                        </Tooltip>
-                        {user ? (
-                            <Menu>
-                                <MenuButton as={Button} rounded='full' variant='link' cursor='pointer' minW={0}>
-                                    <Avatar size='sm' bg='blue.300' name={user.displayName || ''} />
-                                </MenuButton>
-                                <MenuList alignItems='center'>
-                                    <MenuItem onClick={logout}>Logout</MenuItem>
-                                </MenuList>
-                            </Menu>
-                        ) : (
-                            <Button colorScheme='twitter' type='button' onClick={login}>
-                                Login
-                            </Button>
-                        )}
-                    </Flex>
+                <Flex direction='row' gap={4} alignItems='center'>
+                    <Tooltip label='Change Theme' hasArrow>
+                        <IconButton
+                            aria-label='change theme'
+                            variant='ghost'
+                            onClick={toggleColorMode}
+                            colorScheme='gray'
+                            icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+                        />
+                    </Tooltip>
+                    {user ? (
+                        <>
+                            <Avatar size='sm' bg='blue.300' src={user.photoURL} name={user.displayName || 'User'} />
+                            <Tooltip label='Logout' hasArrow>
+                                <IconButton
+                                    size='xs'
+                                    colorScheme='red'
+                                    aria-label='logout'
+                                    icon={<CloseIcon />}
+                                    onClick={logout}
+                                />
+                            </Tooltip>
+                        </>
+                    ) : (
+                        <Button
+                            colorScheme={colorMode === 'dark' ? 'blackAlpha' : 'whiteAlpha'}
+                            type='button'
+                            onClick={login}
+                            color={colorMode === 'dark' ? 'white' : 'black'}
+                        >
+                            Login
+                        </Button>
+                    )}
                 </Flex>
             </Flex>
         </Box>
