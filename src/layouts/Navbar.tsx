@@ -19,7 +19,7 @@ import useAuth from '../hooks/useAuth';
 
 export default function Navbar() {
     const { colorMode, toggleColorMode } = useColorMode();
-    const { user, login } = useAuth();
+    const { user, login, logout } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -62,7 +62,7 @@ export default function Navbar() {
                                     <Avatar size='sm' bg='blue.300' name={user.displayName || ''} />
                                 </MenuButton>
                                 <MenuList alignItems='center'>
-                                    <MenuItem>Logout</MenuItem>
+                                    <MenuItem onClick={logout}>Logout</MenuItem>
                                 </MenuList>
                             </Menu>
                         ) : (

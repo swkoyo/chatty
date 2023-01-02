@@ -34,6 +34,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }, [setUser, toast]);
 
     const logout = useCallback(() => {
+        const userKey = Object.keys(window.localStorage).filter((key: string) => key.startsWith('firebase:auth'))[0];
+        if (userKey) {
+            localStorage.removeItem(userKey);
+        }
         setUser(null);
     }, [setUser]);
 
