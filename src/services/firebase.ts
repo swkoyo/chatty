@@ -28,7 +28,7 @@ export const loginWithGoogle = async () => {
         await setPersistence(auth, browserLocalPersistence);
         const provider = new GoogleAuthProvider();
         const { user } = await signInWithPopup(auth, provider);
-        return { uid: user.uid, displayName: user.displayName, photoUrl: user.photoURL };
+        return { uid: user.uid, displayName: user.displayName, photoURL: user.photoURL };
     } catch (err) {
         if (err instanceof FirebaseError && err.code !== 'auth/cancelled-popup/request') {
             console.error(err);

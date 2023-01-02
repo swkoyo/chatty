@@ -25,7 +25,7 @@ import { formatDate } from '../utils/dayjs';
 
 export default function ChatRoom() {
     const [value, setValue] = useState('');
-    const { user, login } = useAuth();
+    const { user, login, isLoggingIn } = useAuth();
     const { room_id } = useParams();
     const messages = useMessages(room_id as string);
     const [isLoading, setIsLoading] = useState(true);
@@ -130,7 +130,8 @@ export default function ChatRoom() {
                 border='1px'
                 borderColor={useColorModeValue('blackAlpha.300', 'whiteAlpha.300')}
                 borderRadius='xl'
-                height='600px'
+                maxHeight='600px'
+                height='60vh'
                 justifyContent='end'
             >
                 {getContent()}
@@ -182,6 +183,7 @@ export default function ChatRoom() {
                             size='lg'
                             py={4}
                             onClick={login}
+                            isLoading={isLoggingIn}
                         >
                             Login to chat
                         </Button>

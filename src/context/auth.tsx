@@ -8,6 +8,7 @@ export const AuthContext = createContext<TAuthContext | null>(null);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<IUser | null>(null);
+    const [isLoggingIn, setIsLogginIn] = useState(false);
     const toast = useToast();
 
     useEffectOnce(() => {
@@ -19,6 +20,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     const login = useCallback(async () => {
+        setIsLogginIn(true);
         const loggedInUser = await loginWithGoogle();
 
         if (!loggedInUser) {
@@ -29,6 +31,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
                 isClosable: true
             });
         }
+
+        setIsLogginIn(false);
 
         setUser(loggedInUser);
     }, [setUser, toast]);
@@ -45,9 +49,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         () => ({
             user,
             login,
-            logout
+            logout,
+            isLoggingIn
         }),
-        [user, login, logout]
+        [user, login, logout, isLoggingIn]
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

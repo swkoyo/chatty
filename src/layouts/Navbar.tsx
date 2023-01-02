@@ -9,7 +9,8 @@ import {
     Text,
     Tooltip,
     useColorMode,
-    useColorModeValue
+    useColorModeValue,
+    useMediaQuery
 } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import chatRooms from '../config/chatRooms';
@@ -17,9 +18,10 @@ import useAuth from '../hooks/useAuth';
 
 export default function Navbar() {
     const { colorMode, toggleColorMode } = useColorMode();
-    const { user, login, logout } = useAuth();
+    const { user, login, logout, isLoggingIn } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
+    const [isLargerThanMd] = useMediaQuery('(min-width: 62em)');
 
     const handleClick = (room: string) => {
         navigate(`/room/${room}`);
@@ -39,30 +41,36 @@ export default function Navbar() {
                     <Flex alignItems='center' gap={2}>
                         {chatRooms.map((room) => (
                             <Button
-                                size='sm'
+                                size={isLargerThanMd ? 'sm' : 'xs'}
                                 key={room.id}
                                 onClick={() => handleClick(room.id)}
                                 isActive={location.pathname.includes(room.id)}
                             >
-                                {room.title}
+                                {isLargerThanMd ? room.title : room.icon}
                             </Button>
                         ))}
                     </Flex>
                 )}
                 <Box flexGrow={1} />
-                <Flex direction='row' gap={4} alignItems='center'>
+                <Flex direction='row' gap={2} alignItems='center'>
                     <Tooltip label='Change Theme' hasArrow>
                         <IconButton
                             aria-label='change theme'
                             variant='ghost'
                             onClick={toggleColorMode}
                             colorScheme='gray'
+                            size='sm'
                             icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
                         />
                     </Tooltip>
                     {user ? (
                         <>
-                            <Avatar size='sm' bg='blue.300' src={user.photoURL} name={user.displayName || 'User'} />
+                            <Avatar
+                                size='sm'
+                                bg='blue.300'
+                                src={user.photoURL || undefined}
+                                name={user.displayName || 'User'}
+                            />
                             <Tooltip label='Logout' hasArrow>
                                 <IconButton
                                     size='xs'
@@ -79,6 +87,7 @@ export default function Navbar() {
                             type='button'
                             onClick={login}
                             color={colorMode === 'dark' ? 'white' : 'black'}
+                            isLoading={isLoggingIn}
                         >
                             Login
                         </Button>
