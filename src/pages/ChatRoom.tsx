@@ -22,7 +22,7 @@ import { formatDate } from '../utils/dayjs';
 
 export default function ChatRoom() {
     const [value, setValue] = useState('');
-    const { user } = useAuth();
+    const { user, login } = useAuth();
     const { room_id } = useParams();
     const messages = useMessages(room_id as string);
     const [isLoading, setIsLoading] = useState(true);
@@ -75,7 +75,7 @@ export default function ChatRoom() {
                     alignItems='start'
                     justifyContent='end'
                     display='block'
-                    py={4}
+                    py={2}
                     overflowY='scroll'
                     sx={{
                         '&::-webkit-scrollbar': {
@@ -103,32 +103,51 @@ export default function ChatRoom() {
                                     {msg.timestamp ? formatDate(msg.timestamp.toDate()) : 'just now'}
                                 </Text>
                             </HStack>
-                            <Text>{msg.text}</Text>
+                            <Text overflowWrap='anywhere'>{msg.text}</Text>
                         </VStack>
                     ))}
                 </VStack>
-                <InputGroup pt={2}>
-                    <Input
-                        placeholder='Chat here'
-                        value={value}
-                        size='lg'
-                        variant='filled'
-                        onChange={(e) => setValue(e.target.value)}
-                        borderTopRadius='none'
-                        borderBottomRadius='lg'
-                        border='none'
-                        sx={{
-                            _focus: {
-                                background: 'whiteAlpha.100'
-                            }
-                        }}
-                    />
-                    <InputRightElement pr={2} width='4.5rem' pt={5}>
-                        <Button h='1.75rem' size='sm' justifySelf='center' type='button' onClick={handleSubmit}>
-                            Submit
+                {user ? (
+                    <Box as='form' onSubmit={() => handleSubmit}>
+                        <InputGroup pt={2}>
+                            <Input
+                                placeholder='Chat here'
+                                value={value}
+                                size='lg'
+                                variant='filled'
+                                onChange={(e) => setValue(e.target.value)}
+                                borderTopRadius='none'
+                                borderBottomRadius='lg'
+                                border='none'
+                                pr={20}
+                                autoFocus
+                                sx={{
+                                    _focus: {
+                                        background: 'whiteAlpha.100'
+                                    }
+                                }}
+                            />
+                            <InputRightElement pr={2} width='4.5rem' pt={5}>
+                                <Button
+                                    disabled={!value}
+                                    type='submit'
+                                    h='1.75rem'
+                                    size='sm'
+                                    justifySelf='center'
+                                    onClick={handleSubmit}
+                                >
+                                    Submit
+                                </Button>
+                            </InputRightElement>
+                        </InputGroup>
+                    </Box>
+                ) : (
+                    <Box pt={2} w='full'>
+                        <Button w='full' size='lg' py={4} onClick={login}>
+                            Login to chat
                         </Button>
-                    </InputRightElement>
-                </InputGroup>
+                    </Box>
+                )}
             </Box>
         </MainContainer>
     );
