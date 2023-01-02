@@ -13,7 +13,7 @@ import {
     useColorMode,
     useColorModeValue
 } from '@chakra-ui/react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import chatRooms from '../config/chatRooms';
 import useAuth from '../hooks/useAuth';
 
@@ -21,6 +21,11 @@ export default function Navbar() {
     const { colorMode, toggleColorMode } = useColorMode();
     const { user, login } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleClick = (room: string) => {
+        navigate(`/room/${room}`);
+    };
 
     return (
         <Box bg={useColorModeValue('white', 'gray.900')} px={4} position='fixed' top={0} width='100%'>
@@ -28,7 +33,12 @@ export default function Navbar() {
                 {location.pathname !== '/' && (
                     <Flex alignItems='center' gap={2}>
                         {chatRooms.map((room) => (
-                            <Button size='sm' key={room.id}>
+                            <Button
+                                size='sm'
+                                key={room.id}
+                                onClick={() => handleClick(room.id)}
+                                isActive={location.pathname.includes(room.id)}
+                            >
                                 {room.title}
                             </Button>
                         ))}
