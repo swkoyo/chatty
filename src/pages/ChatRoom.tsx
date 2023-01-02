@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { delay } from 'bluebird';
 import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import chatRooms from '../config/chatRooms';
 import useAuth from '../hooks/useAuth';
 import useMessages from '../hooks/useMessages';
@@ -29,11 +29,16 @@ export default function ChatRoom() {
     const messages = useMessages(room_id as string);
     const [isLoading, setIsLoading] = useState(true);
     const ref = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
 
     const roomTitle = useMemo(() => {
         const room = chatRooms.find((c) => c.id === room_id);
         return room?.title;
     }, [room_id]);
+
+    if (!roomTitle) {
+        navigate('/');
+    }
 
     useEffect(() => {
         (async () => {
