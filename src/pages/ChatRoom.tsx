@@ -12,7 +12,7 @@ import {
     VStack
 } from '@chakra-ui/react';
 import { delay } from 'bluebird';
-import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import chatRooms from '../config/chatRooms';
 import useAuth from '../hooks/useAuth';
@@ -30,23 +30,21 @@ export default function ChatRoom() {
     const [isLoading, setIsLoading] = useState(true);
     const ref = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
-
-    const roomTitle = useMemo(() => {
-        const room = chatRooms.find((c) => c.id === room_id);
-        return room?.title;
-    }, [room_id]);
-
-    if (!roomTitle) {
-        navigate('/');
-    }
+    const [roomTitle, setRoomTitle] = useState<string | null>(null);
 
     useEffect(() => {
         (async () => {
-            setIsLoading(true);
-            await delay(1000);
-            setIsLoading(false);
+            const room = chatRooms.find((c) => c.id === room_id);
+            if (!room) {
+                navigate('/');
+            } else {
+                setRoomTitle(room.title);
+                setIsLoading(true);
+                await delay(1000);
+                setIsLoading(false);
+            }
         })();
-    }, [room_id]);
+    }, [room_id, navigate]);
 
     useEffect(() => {
         if (!isLoading) {
