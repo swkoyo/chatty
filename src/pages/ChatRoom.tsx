@@ -32,6 +32,7 @@ export default function ChatRoom() {
     const ref = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
     const [roomTitle, setRoomTitle] = useState<string | null>(null);
+    const scrollThumbColor = useColorModeValue('secondary', 'primary');
 
     useEffect(() => {
         (async () => {
@@ -95,7 +96,7 @@ export default function ChatRoom() {
                         backgroundColor: `rgba(0, 0, 0, 0.05)`
                     },
                     '&::-webkit-scrollbar-thumb': {
-                        backgroundColor: 'whiteAlpha.300',
+                        backgroundColor: scrollThumbColor,
                         borderRadius: '8px'
                     }
                 }}
@@ -115,7 +116,7 @@ export default function ChatRoom() {
                 ))}
             </VStack>
         );
-    }, [isLoading, messages]);
+    }, [isLoading, messages, scrollThumbColor]);
 
     return (
         <MainContainer>
