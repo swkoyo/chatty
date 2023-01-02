@@ -12,9 +12,9 @@ import {
     VStack
 } from '@chakra-ui/react';
 import { delay } from 'bluebird';
-import { capitalize } from 'lodash';
-import { MouseEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import chatRooms from '../config/chatRooms';
 import useAuth from '../hooks/useAuth';
 import useMessages from '../hooks/useMessages';
 import MainContainer from '../layouts/MainContainer';
@@ -29,6 +29,11 @@ export default function ChatRoom() {
     const messages = useMessages(room_id as string);
     const [isLoading, setIsLoading] = useState(true);
     const ref = useRef<HTMLDivElement>(null);
+
+    const roomTitle = useMemo(() => {
+        const room = chatRooms.find((c) => c.id === room_id);
+        return room?.title;
+    }, [room_id]);
 
     useEffect(() => {
         (async () => {
@@ -107,7 +112,7 @@ export default function ChatRoom() {
     return (
         <MainContainer>
             <Text mb={10} alignSelf='center' fontSize='2xl' fontWeight='bold'>
-                {capitalize(room_id)}
+                {roomTitle}
             </Text>
             <Box
                 display='flex'
