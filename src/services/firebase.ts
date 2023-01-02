@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { getAnalytics } from 'firebase/analytics';
 import { FirebaseError, FirebaseOptions, initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { browserLocalPersistence, getAuth, GoogleAuthProvider, setPersistence, signInWithPopup } from 'firebase/auth';
 import { addDoc, collection, getFirestore, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { Dispatch, SetStateAction } from 'react';
 import { IUser } from '../types/auth';
@@ -24,8 +24,9 @@ const db = getFirestore(app);
 
 export const loginWithGoogle = async () => {
     try {
-        const provider = new GoogleAuthProvider();
         const auth = getAuth();
+        await setPersistence(auth, browserLocalPersistence);
+        const provider = new GoogleAuthProvider();
         const { user } = await signInWithPopup(auth, provider);
         return { uid: user.uid, displayName: user.displayName };
     } catch (err) {
