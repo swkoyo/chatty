@@ -1,14 +1,16 @@
-import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { ChatIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import {
     Avatar,
     Box,
     Button,
     Flex,
+    HStack,
     IconButton,
     Menu,
     MenuButton,
     MenuItem,
     MenuList,
+    Text,
     Tooltip,
     useColorMode,
     useColorModeValue
@@ -30,7 +32,14 @@ export default function Navbar() {
     return (
         <Box bg={useColorModeValue('white', 'gray.900')} px={4} position='fixed' top={0} width='100%'>
             <Flex h={16} alignItems='center' justifyContent='space-between'>
-                {location.pathname !== '/' && (
+                {location.pathname === '/' ? (
+                    <HStack>
+                        <ChatIcon fontSize='2xl' />
+                        <Text fontSize='xl' fontWeight='medium'>
+                            Agora
+                        </Text>
+                    </HStack>
+                ) : (
                     <Flex alignItems='center' gap={2}>
                         {chatRooms.map((room) => (
                             <Button
