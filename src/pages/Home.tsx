@@ -1,10 +1,14 @@
-import { Center, Grid, GridItem, Text } from '@chakra-ui/react';
+import { Button, Grid, GridItem, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import chatRooms from '../config/chatRooms';
 import MainContainer from '../layouts/MainContainer';
 
 export default function Home() {
     const navigate = useNavigate();
+
+    const handleClick = (room: string) => {
+        navigate(`/room/${room}`);
+    };
 
     return (
         <MainContainer>
@@ -14,9 +18,9 @@ export default function Home() {
             <Grid templateColumns='repeat(12, 1fr)' w='full' gap={4} alignItems='center'>
                 {chatRooms.map((room) => (
                     <GridItem key={room.id} colSpan={{ base: 6 }}>
-                        <Center borderRadius='xl' background='whiteAlpha.400' p={10}>
-                            <Text fontSize='xl'>{room.title}</Text>
-                        </Center>
+                        <Button type='button' onClick={() => handleClick(room.id)} fontSize='xl' w='full' p={10}>
+                            {room.title}
+                        </Button>
                     </GridItem>
                 ))}
             </Grid>
