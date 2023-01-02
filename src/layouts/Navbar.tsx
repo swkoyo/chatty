@@ -30,7 +30,7 @@ export default function Navbar() {
     };
 
     return (
-        <Box bg={useColorModeValue('white', 'gray.900')} px={4} position='fixed' top={0} width='100%'>
+        <Box bg={useColorModeValue('secondary', 'primary')} px={4} position='fixed' top={0} width='100%'>
             <Flex h={16} alignItems='center' justifyContent='space-between'>
                 {location.pathname === '/' ? (
                     <HStack>

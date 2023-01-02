@@ -9,6 +9,7 @@ import {
     Spinner,
     StackDivider,
     Text,
+    useColorModeValue,
     VStack
 } from '@chakra-ui/react';
 import { delay } from 'bluebird';
@@ -51,6 +52,8 @@ export default function ChatRoom() {
             ref.current?.scrollIntoView();
         }
     }, [isLoading, messages]);
+
+    const inputColor = useColorModeValue('blackAlpha.100', 'whiteAlpha.100');
 
     const handleSubmit = (e: MouseEvent<HTMLButtonElement>) => {
         if (room_id) {
@@ -118,10 +121,12 @@ export default function ChatRoom() {
                 {roomTitle}
             </Text>
             <Box
+                boxShadow='2xl'
                 display='flex'
                 flexDir='column'
                 w='full'
                 border='1px'
+                borderColor={useColorModeValue('blackAlpha.300', 'whiteAlpha.300')}
                 borderRadius='xl'
                 height='600px'
                 justifyContent='end'
@@ -137,13 +142,17 @@ export default function ChatRoom() {
                                 variant='filled'
                                 onChange={(e) => setValue(e.target.value)}
                                 borderTopRadius='none'
-                                borderBottomRadius='lg'
+                                borderBottomRadius='xl'
                                 border='none'
                                 pr={20}
                                 autoFocus
+                                background={inputColor}
                                 sx={{
                                     _focus: {
-                                        background: 'whiteAlpha.100'
+                                        background: inputColor
+                                    },
+                                    _hover: {
+                                        background: inputColor
                                     }
                                 }}
                             />
@@ -154,6 +163,7 @@ export default function ChatRoom() {
                                     h='1.75rem'
                                     size='sm'
                                     justifySelf='center'
+                                    colorScheme='messenger'
                                     onClick={handleSubmit}
                                 >
                                     Submit
